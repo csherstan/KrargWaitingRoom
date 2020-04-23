@@ -1,0 +1,43 @@
+<html>
+<head>
+</head>
+	<title>Closed</title>
+	<body bgcolor="#ff0000">
+		<div id="header" style="text-align: center; top: 5%; position: relative">
+			<h1 id="busy">I'm Busy with </h1>
+			<h1>Go away!!!</h1>
+		</div>
+		<div style="display: flex; align-items: center; justify-content: center; height: 75%">
+			<img src="https://thumbs.gfycat.com/DeliciousHonestHoiho.webp">
+			<img src="https://www.roadtrafficsigns.com/img/lg/K/hand-symbol-stop-sign-k2-0610.png" style="height:75%">
+			<img src="https://thumbs.gfycat.com/DeliciousHonestHoiho.webp">
+		</div>
+		<h1 id="countdown" style="text-align: center; bottom: 5%; position: relative"></h1>
+		<script>
+			var div1 = document.getElementById('busy');
+			div1.innerHTML += "<%= reason %>" + " until " + "<%= endtime %>"+".";
+			document.getElementById("countdown").innerHTML = "Time Left: "+"<%= timeleft %>";
+			checkStatus();
+			function checkStatus() {
+			    var xhttp = new XMLHttpRequest();
+			    xhttp.open("POST", "/test", true);
+			    xhttp.send();
+			    xhttp.onreadystatechange = function() {
+			    	
+			        if (this.readyState == 4 && this.status == 200) {
+			        	var data = JSON.parse(this.responseText);
+			        	if(!data.hasTime) {
+				       		location.href = "http://10.0.0.98:8080/open"	
+				       }
+				       else{
+				       		var div1 = document.getElementById('busy');
+							div1.innerHTML = "I'm Busy with " + data.reason + " until " + data.endtime + ".";
+							document.getElementById("countdown").innerHTML = "Time Left: " + data.timeleft;
+				            setTimeout(checkStatus, 5000);
+				       }
+			       }
+			    };
+			}
+		</script>
+	</body>
+</html>

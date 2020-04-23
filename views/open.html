@@ -1,0 +1,38 @@
+<html>
+	<title>Open</title>
+	<body bgcolor="#39ff14">
+		<div id="left" style="float:left; width:33%; position:relative; top:25%">
+			<img src="https://media2.giphy.com/media/fIrNhrpxMvcli/giphy.gif" style="float:right">
+		</div>
+		<div id="center" style="float:left; width:33%; position:relative; top:25%">
+			<div "title">
+			<div id="greeting" style="text-align: center">
+				<h1>I'm free</h1>
+				<p>Come on in!</p>
+			</div>
+			<div id="worktime" style="text-align: center; display:none">
+			</div>
+		</div>
+		</div>
+		<div id="right" style="float:left; width:33%; position:relative; top:25%">
+			<img src="https://media2.giphy.com/media/fIrNhrpxMvcli/giphy.gif">
+		</div>
+		<script>
+		checkStatus();
+			function checkStatus() {
+			    var xhttp = new XMLHttpRequest();
+			    xhttp.open("POST", "/test", true);
+			    xhttp.send();
+			    xhttp.onreadystatechange = function() {
+			        if (this.readyState == 4 && this.status == 200) {
+			        	var data = JSON.parse(this.responseText);
+			        	if(data.hasTime){
+			        		location.href = "http://10.0.0.98:8080/closed"
+			        	}
+			       }
+			       setTimeout(checkStatus, 5000);
+			    };
+			}
+		</script>
+	</body>
+</html>
