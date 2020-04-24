@@ -27,17 +27,17 @@
 			        if (this.readyState == 4 && this.status == 200) {
 			        	var data = JSON.parse(this.responseText);
 			        	if(!data.hasTime) {
-				       		location.href = "http://10.0.0.98:8080/open"	
+				       		location.href = "open"	
 				       }
 				       else{
 				       		var div1 = document.getElementById('busy');
 							div1.innerHTML = "I'm Busy with " + data.reason + " until " + data.endtime + ".";
 							document.getElementById("countdown").innerHTML = "Time Left: " + data.timeleft;
-				            setTimeout(checkStatus, 5000);
 				       }
 			       }
 			    };
 			}
+		     setInterval(checkStatus, 2000); 
 		</script>
 	</body>
 </html>

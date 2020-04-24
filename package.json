@@ -6,14 +6,16 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "constantinople": "^4.0.1",
     "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "ejs": "^3.0.2",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
+    "core-js": "^3.6.5",
+    "debug": "^4.1.1",
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
+    "http-errors": "^1.7.3",
     "ip": "^1.1.5",
-    "jade": "~1.11.0",
     "lodash": "^4.17.15",
-    "morgan": "~1.9.1"
+    "morgan": "^1.10.0",
+    "pug": "^2.0.4"
   }
 }

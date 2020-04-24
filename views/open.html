@@ -27,12 +27,12 @@
 			        if (this.readyState == 4 && this.status == 200) {
 			        	var data = JSON.parse(this.responseText);
 			        	if(data.hasTime){
-			        		location.href = "http://10.0.0.98:8080/closed"
+			        		location.href = "closed"
 			        	}
 			       }
-			       setTimeout(checkStatus, 5000);
 			    };
 			}
+		setInterval(checkStatus, 2000);
 		</script>
 	</body>
 </html>
