@@ -1,33 +1,53 @@
 <html>
 	<title>Krarg Admin</title>
-	<body bgcolor="#57595D">
-		<div id="left" style="float:left; width:33%; position:relative; top:25%">
-		</div>
-		<div id="center" style="float:left; width:33%; position:relative; top:25%">
-			<div id="worktime" style="text-align: center">
-				<h1>Work time!</h1>
-				<form id="form1" action="admin"  method="post" style="position:relative; width: 33%; left: 33%">
-					<label style="margin-bottom: 5px">Reason:</label>
-				    <input style="margin-bottom: 15px" type="text" name="reason"/>
-					<label style="margin-bottom: 5px"for="appt">Busy Until: </label>
-					<input style="margin-bottom: 15px" type="time" id="time" name="time">
-					<input type="submit" style="position:relative; width: 33%; left: 33%">
-				</form>
+	<link>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			  crossorigin="anonymous"/>
+	</head>
+	<body class="bg-light">
+		<div class="container">
+			<div id="center">
+				<div id="worktime">
+					<h1>Work time!</h1>
+					<form id="form1" action="admin"  method="post">
+						<div class="form-group">
+							<label for="reason">Reason:</label>
+							<input class="form-control" type="text" id="reason" name="reason"/>
+						</div>
+						<div class="form-group">
+							<label for="time">Busy Until: </label>
+							<input class="form-control" type="time" id="time" name="time">
+						</div>
+						<button type="submit" onclick="start('partial')" name="action" value="partial" class="btn btn-warning">Warn</button>
+						<button type="submit" onclick="start('closed')" name="action" value="closed" class="btn btn-danger">Closed</button>
+					</form>
+				</div>
+				<div id="hasTime" style="text-align: center; display: none">
+					<h1>Working....</h1>
+					<h1>On <%= reason %></h1>
+					<h1>Until <%= endtime %></h1>
+					<button type="button" onclick="deleteData()" class="btn btn-success btn-block">Stop Working</button>
+				</div>
 			</div>
-			<div id="hasTime" style="text-align: center; display: none">
-				<h1>Working....</h1>
-				<h1>On <%= reason %></h1>
-				<h1>Until <%= endtime %></h1>
-				<button type="button" onclick="deleteData()">Stop Working</button>
-			</div>
-		</div>
-		<div id="right" style="float:left; width:33%; position:relative; top:25%">
 		</div>
 		<script>
 			if("<%= hasTime %>" == "true"){
 				document.getElementById("worktime").style.display = "none";
 				document.getElementById("hasTime").style.display = "block";
 			}
+			function start() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						document.getElementById("worktime").style.display = "none";
+						document.getElementById("hasTime").style.display = "block";
+					}
+				};
+				xhttp.open("POST", "/admin", true);
+				xhttp.send();
+			}
+
 			function deleteData() {
 			    var xhttp = new XMLHttpRequest();
 			    xhttp.onreadystatechange = function() {

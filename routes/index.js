@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 const fs = require('fs');
 
+var data = getData();
+
 router.get('/', function (req, res) {
-  	res.render('open', { 
-    	title: 'Open'
+  	res.render('client', { 
+    	title: 'Client'
 	});
 });
 
@@ -26,15 +28,9 @@ router.get('/closed', function (req, res) {
 });
 
 router.post('/test', function (req, res) {
-  	 var data = getData();
-  	 	res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify({ 
-        	reason: data.reason,  
-        	endtime: data.endtime, 
-        	timeleft: data.timeleft, 
-        	hasTime: data.hasTime 
-        }));
-        res.end();
+	res.writeHead(200, { 'Content-Type': 'application/json' });
+	res.write(JSON.stringify(data));
+	res.end();
 });
 
 router.get('/admin', function (req, res) {
@@ -44,7 +40,7 @@ router.get('/admin', function (req, res) {
 		    reason: data.reason,
 		    endtime: data.endtime,
     		timeleft: data.timeleft,
-    		hasTime: data.hasTime
+    		hasTime: "closed" == data.state
 		});
 });
 
@@ -53,30 +49,26 @@ router.post('/admin', function(req, res) {
 		    var date = new Date(this.valueOf());
 		    date.setDate(date.getDate() + days);
 		    return date;
-		}
+		};
 
 		var d = new Date();
 		var month = d.getMonth() + 1;
 		var day = d.getDate();
 		var time = req.body.time;
+		var action = req.body.action
 		var countDownDate = new Date(month+" "+day+", "+ d.getFullYear()+" "+time);
 		
 		if(countDownDate < new Date() && req.body.time != ""){
 			countDownDate = countDownDate.addDays(1);
 		}
 
-	fs.writeFile('./public/db.txt', req.body.reason+"\n"+countDownDate+"\n"+time, function(err) {
-	    if(err) {
-	        return console.log(err);
-	    }
-	    else{
-	    	console.log("The file was saved!");
-	    }
-	});
+		fs.writeFileSync('./public/db.json', JSON.stringify(req.body));
+		data = req.body;
+		data.state = action;
 
 	var now = new Date();
   	var distance = countDownDate - now;	
-  	var timeString = getTimeString(distance);	
+  	var timeString = getTimeString(distance);
 
 	res.render('admin', {
 		    title: 'Admin',
@@ -88,10 +80,14 @@ router.post('/admin', function(req, res) {
 });
 
 router.post('/delete', function (req, res) {
-	fs.writeFile('./public/db.txt', '', function(){
-		res.sendStatus(200);
-	});
+	data = get_def_data();
+	write_db(data);
+	res.sendStatus(200);
 });
+
+function write_db(data) {
+	fs.writeFileSync('./public/db.json', JSON.stringify(data));
+};
 
 function getTimeString (distance) {
     // Time calculations for days, hours, minutes and seconds
@@ -113,21 +109,23 @@ function getTimeString (distance) {
 	  return makeTime;
 };
 
-function getData (distance) {
-    var lines = fs.readFileSync('./public/db.txt', 'utf-8').split(/\r?\n/);
-	var time = lines[1];
-	var now = new Date();
-  	var distance = Date.parse(lines[1]) - now;
-  	var timeString = getTimeString(distance);
-  	var hasTime = true;
-  	if (distance < 0 || typeof time == 'undefined') {
-  	 	hasTime = false;
-  	}
+function get_def_data() {
+	return {
+		state: "open",
+		reason: "",
+		endtime: null
+	}
+};
 
-	return {reason: lines[0],
-	    	endtime: lines[2],
-			timeleft: timeString,
-			hasTime: hasTime};
+function getData (distance) {
+	var data = get_def_data();
+	try {
+		fs.readFileSync('./public/db.json');
+		data = JSON.parse();
+	} catch (e) {
+	}
+
+	return data
 };
 
 module.exports = router;

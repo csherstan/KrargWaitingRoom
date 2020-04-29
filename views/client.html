@@ -1,0 +1,44 @@
+<html>
+	<title>Open</title>
+    <head>
+        <script
+          src="https://code.jquery.com/jquery-3.5.0.js"
+          integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
+          crossorigin="anonymous">
+        </script>
+    </head>
+	<body bgcolor="#39ff14">
+	    <script>
+            var last_state = null;
+            var colors = {
+                open: "#39ff14",
+                partial: "orange",
+                closed: "red"
+            };
+
+            function set_bg_color(color) {
+                $(document.body).attr("bgcolor", color);
+            }
+
+	        checkStatus();
+		    function checkStatus() {
+		        var xhttp = new XMLHttpRequest();
+		        xhttp.open("POST", "/test", true);
+		        xhttp.send();
+		        xhttp.onreadystatechange = function() {
+		            if (this.readyState == 4 && this.status == 200) {
+		            	var data = JSON.parse(this.responseText);
+		            	// alert(this.responseText);
+                        if (data.state != last_state) {
+							$(document.body).text(this.responseText + last_state);
+                            set_bg_color(colors[data.state]);
+                            last_state = data.state;
+                        }
+
+		           }
+		        };
+		    }
+    		setInterval(checkStatus, 2000);
+		</script>
+	</body>
+</html>
